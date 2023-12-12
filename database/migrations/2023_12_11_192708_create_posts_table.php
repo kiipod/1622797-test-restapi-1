@@ -19,7 +19,6 @@ return new class extends Migration
                 ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->string('image', 255)->nullable();
             $table->string('title', 100);
             $table->string('fragment', 255);
             $table->text('content');
