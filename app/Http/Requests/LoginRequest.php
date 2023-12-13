@@ -17,7 +17,7 @@ class LoginRequest extends FormRequest
     /**
      * Метод проводит валидацию полей при входе на сайт
      *
-     * @return array[]
+     * @return array
      */
     public function rules(): array
     {
