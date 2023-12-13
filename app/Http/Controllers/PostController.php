@@ -7,6 +7,7 @@ use App\Http\Responses\NotFoundResponse;
 use App\Http\Responses\SuccessResponse;
 use App\Models\Post;
 use App\Repositories\PostRepository\PostRepository;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\CssSelector\Exception\InternalErrorException;
 use Throwable;
@@ -49,24 +50,29 @@ class PostController extends Controller
 
         $newPost = $this->postRepository->addNewPost($params, $user->id);
 
-        return new SuccessResponse(['post' => $newPost]);
+        return new SuccessResponse($newPost);
     }
 
     /**
      * Метод отвечает за обновление новости
      *
      * @param PostRequest $request
-     * @return SuccessResponse
-     * @throws Throwable
+     * @param int $postId
+     * @return SuccessResponse|NotFoundResponse
+     * @throws AuthorizationException
      */
-    public function update(PostRequest $request): SuccessResponse
+    public function update(PostRequest $request, int $postId): SuccessResponse|NotFoundResponse
     {
-        $currentPost = $request->findPost();
+        $currentPost = Post::find($postId);
+        if (!$currentPost) {
+            return new NotFoundResponse();
+        }
 
         $params = $request->validated();
-        $postId = $currentPost->id;
 
-        $updatedPost = $this->postRepository->updatePost($postId, $params);
+        $this->authorize('update', $currentPost);
+
+        $updatedPost = $this->postRepository->updatePost($currentPost, $params);
 
         return new SuccessResponse($updatedPost);
     }
@@ -76,7 +82,7 @@ class PostController extends Controller
      *
      * @param int $postId
      * @return SuccessResponse|NotFoundResponse
-     * @throws Throwable
+     * @throws AuthorizationException
      */
     public function destroy(int $postId): SuccessResponse|NotFoundResponse
     {
@@ -85,8 +91,10 @@ class PostController extends Controller
             return new NotFoundResponse();
         }
 
+        $this->authorize('delete', $currentPost);
+
         $this->postRepository->deletePost($postId);
 
-        return new SuccessResponse('Новость успешно удалена');
+        return new SuccessResponse(['Новость успешно удалена']);
     }
 }

@@ -8,6 +8,6 @@ use App\Models\Post;
 interface PostRepositories
 {
     public function addNewPost(array $params, int $userId);
-    public function updatePost(PostRequest $request, Post $post);
+    public function updatePost(array $params, int $postId);
     public function deletePost(int $postId);
 }

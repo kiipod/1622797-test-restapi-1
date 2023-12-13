@@ -9,30 +9,10 @@ use Illuminate\Foundation\Http\FormRequest;
 class PostRequest extends FormRequest
 {
     /**
-     * Метод находит нужную новость для удаления и редактирования
-     *
-     * @return Post|null
-     */
-    public function findPost(): ?Post
-    {
-        return Post::find($this->route('id'));
-    }
-
-    /**
-     * Проверка пользователя на права для удаления и обновления новости
+     * Проверка пользователя на право сделать запрос
      */
     public function authorize(): bool
     {
-        if ($this->isMethod('patch')) {
-            $comment = $this->findPost();
-            return $this->user()->can('update', $comment);
-        }
-
-        if ($this->isMethod('delete')) {
-            $comment = $this->findPost();
-            return $this->user()->can('destroy', $comment);
-        }
-
         return true;
     }
 
@@ -47,17 +27,19 @@ class PostRequest extends FormRequest
             'title' => [
                 'required',
                 'string',
-                'between:50,100'
+                'min:50',
+                'max:100'
             ],
             'fragment' => [
                 'required',
                 'string',
-                'between:50,255'
+                'min:50',
+                'max:255'
             ],
             'content' => [
                 'required',
                 'string',
-                'between:100,10000'
+                'min:100'
             ]
         ];
     }
