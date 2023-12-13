@@ -47,12 +47,12 @@ class PostRequest extends FormRequest
             'title' => [
                 'required',
                 'string',
-                'between:50,400'
+                'between:50,100'
             ],
             'fragment' => [
                 'required',
                 'string',
-                'between:50,100'
+                'between:50,255'
             ],
             'content' => [
                 'required',
