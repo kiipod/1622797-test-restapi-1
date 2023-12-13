@@ -2,15 +2,15 @@
 
 namespace App\Http\Responses;
 
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class BaseResponse implements Responsable
 {
-    protected mixed $data = [];
     public int $statusCode;
+    protected mixed $data = [];
 
     /**
      * @param mixed $data
