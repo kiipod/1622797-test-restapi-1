@@ -14,12 +14,11 @@ class PostRepository implements PostRepositories
      * Метод получает всю информацию о новости по id
      *
      * @param int $postId
-     * @param array $columns
      * @return Model|null
      */
-    public function getPostById(int $postId, array $columns = ['*']): ?Model
+    public function getPostById(int $postId): ?Model
     {
-        return Post::where('id', '=', $postId)->firstOrFail($columns);
+        return Post::find($postId);
     }
 
     /**
@@ -49,27 +48,19 @@ class PostRepository implements PostRepositories
     /**
      * Метод отвечает за обновление новости
      *
-     * @param PostRequest $request
-     * @param Post $post
+     * @param array $params
+     * @param int $postId
      * @return Post
      */
-    public function updatePost(PostRequest $request, Post $post): Post
+    public function updatePost(array $params, int $postId): Post
     {
-        $params = $request->toArray();
+        $post = Post::find($postId);
 
-        if (isset($params['title'])) {
-            $post->title = $params['title'];
-        }
+        $post->title = $params['title'];
+        $post->fragment = $params['fragment'];
+        $post->content = $params['content'];
 
-        if (isset($params['fragment'])) {
-            $post->fragment = $params['fragment'];
-        }
-
-        if (isset($params['content'])) {
-            $post->content = $params['content'];
-        }
-
-        $post->update();
+        $post->save();
 
         return $post;
     }
